@@ -21,8 +21,7 @@ const MenuGrid = ({ items }) => {
             layout
             variants={containerVariants}
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
+            animate="visible"
             className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-x-5 sm:gap-x-8 gap-y-8 sm:gap-y-14"
           >
             <AnimatePresence mode="popLayout">
