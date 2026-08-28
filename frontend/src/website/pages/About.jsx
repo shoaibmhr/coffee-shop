@@ -1,4 +1,3 @@
-import Navbar from "../common/Navbar";
 import PageHero from "../common/PageHero";
 import OurStory from "../components/about/OurStory";
 import WhoWeAre from "../components/about/WhoWeAre";
@@ -8,7 +7,6 @@ import OurValues from "../components/about/OurValues";
 const About = () => {
   return (
     <main className="w-full overflow-x-hidden">
-      <Navbar />
       <PageHero
         title="About Us"
         subtitle="Blended flavors, brewed to perfection — the story behind every cup we serve."

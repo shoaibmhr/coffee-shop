@@ -1,11 +1,9 @@
-import Navbar from "../common/Navbar";
 import PageHero from "../common/PageHero";
 import ReserveSection from "../components/reserve/ReserveSection";
 
 const Reserve = () => {
   return (
     <main className="w-full overflow-x-hidden">
-      <Navbar />
       <PageHero
         title="Reserve a Table"
         subtitle="Save your seat ahead of time and let us take care of the rest."
