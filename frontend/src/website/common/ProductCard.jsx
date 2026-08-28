@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart } from "lucide-react";
+import { Heart, ShoppingBag, Check } from "lucide-react";
+import { addItem } from "../../redux/slices/cartSlice";
+import { toggleWishlist } from "../../redux/slices/wishlistSlice";
 
 const cardVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -8,8 +11,24 @@ const cardVariants = {
 };
 
 const ProductCard = ({ item }) => {
-  const [wishlisted, setWishlisted] = useState(false);
+  const dispatch = useDispatch();
+  const wishlistItems = useSelector((state) => state.wishlist.items);
+  const wishlisted = wishlistItems.some((i) => i.id === item.id);
+
+  const [selectedSize, setSelectedSize] = useState(item.sizes[0]);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [justAdded, setJustAdded] = useState(false);
+
+  const handleAddToCart = () => {
+    dispatch(addItem({ ...item, size: selectedSize }));
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 1500);
+  };
+
+  const handleToggleWishlist = (e) => {
+    e.stopPropagation();
+    dispatch(toggleWishlist(item));
+  };
 
   return (
     <motion.div
@@ -50,10 +69,7 @@ const ProductCard = ({ item }) => {
         </AnimatePresence>
 
         <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setWishlisted((prev) => !prev);
-          }}
+          onClick={handleToggleWishlist}
           onFocus={() => setShowTooltip(true)}
           onBlur={() => setShowTooltip(false)}
           aria-label="Toggle wishlist"
@@ -77,13 +93,50 @@ const ProductCard = ({ item }) => {
           {item.name}
         </h3>
         <p className="font-body text-xs sm:text-sm font-semibold text-coffee-accent mt-1.5 sm:mt-2">
-          Price: {item.price}
+          Price: ${selectedSize.price.toFixed(2)}
         </p>
-        <p className="font-body text-xs sm:text-sm text-coffee-dark/55 leading-relaxed mt-1.5 sm:mt-2 mb-4 sm:mb-5">
+        <p className="font-body text-xs sm:text-sm text-coffee-dark/55 leading-relaxed mt-1.5 sm:mt-2 mb-3.5">
           {item.description}
         </p>
-        <button className="px-5 sm:px-6 py-2 sm:py-2.5 border-2 border-coffee-dark text-coffee-dark font-body text-xs font-bold uppercase tracking-[0.15em] hover:bg-coffee-dark hover:text-coffee-cream transition-colors duration-300">
-          Shop Now
+
+        {/* Size selector */}
+        {item.sizes.length > 1 && (
+          <div className="flex items-center gap-2 mb-4">
+            {item.sizes.map((size) => (
+              <button
+                key={size.label}
+                onClick={() => setSelectedSize(size)}
+                className={`px-3 py-1.5 rounded-full text-[11px] font-body font-semibold uppercase tracking-wide border transition-colors ${
+                  selectedSize.label === size.label
+                    ? "bg-coffee-dark border-coffee-dark text-coffee-cream"
+                    : "border-coffee-dark/20 text-coffee-dark/60 hover:border-coffee-dark/50"
+                }`}
+              >
+                {size.label}
+              </button>
+            ))}
+          </div>
+        )}
+        {item.sizes.length === 1 && <div className="mb-4" />}
+
+        <button
+          onClick={handleAddToCart}
+          disabled={justAdded}
+          className={`inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2 sm:py-2.5 border-2 font-body text-xs font-bold uppercase tracking-[0.15em] transition-colors duration-300 ${
+            justAdded
+              ? "bg-green-600 border-green-600 text-white"
+              : "border-coffee-dark text-coffee-dark hover:bg-coffee-dark hover:text-coffee-cream"
+          }`}
+        >
+          {justAdded ? (
+            <>
+              <Check size={14} /> Added
+            </>
+          ) : (
+            <>
+              <ShoppingBag size={13} /> Add to Cart
+            </>
+          )}
         </button>
       </div>
     </motion.div>
