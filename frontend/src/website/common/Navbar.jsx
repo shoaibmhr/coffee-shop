@@ -56,9 +56,9 @@ const galleryPreview = [
 
 const navLinks = [
   { name: "Home", href: "/" },
+  { name: "About", href: "/about" },
   { name: "Menu", href: "/menu", dropdown: "categories" },
   { name: "Reserve", href: "/reserve" },
-  { name: "About", href: "/about" },
   { name: "Gallery", href: "/gallery", dropdown: "gallery" },
   { name: "Contact", href: "/contact" },
 ];
