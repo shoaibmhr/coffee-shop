@@ -4,7 +4,7 @@ import Container from "../../common/Container";
 
 const AboutPreview = () => {
   return (
-    <section className="w-full bg-white py-20 md:py-28 overflow-hidden">
+    <section className="w-full bg-coffee-cream py-20 md:py-28 overflow-hidden">
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left: Text Content */}
@@ -62,7 +62,7 @@ const AboutPreview = () => {
 
             <a
               href="/about"
-              className="inline-block mt-9 px-8 py-3.5 rounded-full bg-coffee-accent hover:bg-coffee-brown transition-colors font-body font-semibold text-white text-sm shadow-lg shadow-coffee-accent/20"
+              className="inline-block mt-9 px-8 py-3.5 rounded-full bg-coffee-accent hover:bg-coffee-brown transition-colors font-body font-semibold text-coffee-cream text-sm shadow-lg shadow-coffee-accent/20"
             >
               Read Our Story
             </a>

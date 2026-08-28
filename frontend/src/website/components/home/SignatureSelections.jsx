@@ -14,7 +14,7 @@ const containerVariants = {
 
 const SignatureSelections = () => {
   return (
-    <section className="w-full bg-coffee-cream py-14 sm:py-20 md:py-28">
+    <section className="w-full bg-coffee-ivory py-14 sm:py-20 md:py-28">
       <Container>
         {/* Header */}
         <div className="text-center max-w-xl mx-auto mb-10 sm:mb-14 md:mb-16 px-4 sm:px-0">

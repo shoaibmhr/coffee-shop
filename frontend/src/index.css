@@ -1,11 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand Colors - Blend & Brew */
-  --color-coffee-dark: #1E1E1E;
-  --color-coffee-brown: #5C3A21;
-  --color-coffee-accent: #8B5A2B;
+  /* Brand Colors - Blend & Brew (logo-matched, warm chocolate palette) */
+  --color-coffee-dark: #2B1810;
+  --color-coffee-brown: #6F3D1D;
+  --color-coffee-accent: #9C5A2C;
   --color-coffee-cream: #F5E6D3;
+   --color-coffee-ivory: #FAF3EA;   
 
   /* Fonts */
   --font-heading: "Playfair Display", serif;
@@ -18,6 +19,7 @@ body {
   background-color: var(--color-coffee-cream);
   color: var(--color-coffee-dark);
 }
+
 
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

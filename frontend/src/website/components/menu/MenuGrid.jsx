@@ -10,7 +10,7 @@ const containerVariants = {
 
 const MenuGrid = ({ items }) => {
   return (
-    <section className="w-full bg-coffee-cream py-12 sm:py-16">
+    <section className="w-full bg-coffee-ivory py-12 sm:py-16">
       <Container>
         <p className="font-body text-sm text-coffee-dark/50 mb-8">
           Showing {items.length} {items.length === 1 ? "item" : "items"}

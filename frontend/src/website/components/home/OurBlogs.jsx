@@ -60,7 +60,7 @@ const BlogCard = ({ post }) => {
         />
 
         {/* Date badge */}
-        <div className="absolute top-4 left-4 sm:top-5 sm:left-5 bg-white px-3 py-2 sm:px-3.5 sm:py-2.5 text-center shadow-md">
+        <div className="absolute top-4 left-4 sm:top-5 sm:left-5 bg-coffee-cream px-3 py-2 sm:px-3.5 sm:py-2.5 text-center shadow-md">
           <span className="block font-heading text-base sm:text-lg font-bold text-coffee-dark leading-none">
             {post.day}
           </span>
@@ -76,13 +76,13 @@ const BlogCard = ({ post }) => {
           {post.category}
         </span>
 
-        <h3 className="font-heading text-lg sm:text-xl font-bold text-coffee-dark leading-snug mt-2.5 group-hover:text-coffee-accent transition-colors duration-300">
+        <h3 className="font-heading text-lg sm:text-xl font-bold text-coffee-cream leading-snug mt-2.5 group-hover:text-coffee-accent transition-colors duration-300">
           {post.title}
         </h3>
 
-        <span className="block w-10 h-0.5 bg-coffee-dark/15 mt-3.5 mb-3.5 group-hover:w-16 group-hover:bg-coffee-accent transition-all duration-300" />
+        <span className="block w-10 h-0.5 bg-coffee-cream/20 mt-3.5 mb-3.5 group-hover:w-16 group-hover:bg-coffee-accent transition-all duration-300" />
 
-        <p className="font-body text-sm text-coffee-dark/55 leading-relaxed line-clamp-3">
+        <p className="font-body text-sm text-coffee-cream/60 leading-relaxed line-clamp-3">
           {post.excerpt}
         </p>
       </div>
@@ -92,15 +92,15 @@ const BlogCard = ({ post }) => {
 
 const OurBlogs = () => {
   return (
-    <section className="w-full bg-white py-14 sm:py-20 md:py-24">
+    <section className="w-full bg-coffee-brown py-14 sm:py-20 md:py-24">
       <Container>
         {/* Header */}
         <div className="text-center max-w-xl mx-auto mb-10 sm:mb-14 md:mb-16">
-          <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-coffee-dark tracking-wide uppercase">
+          <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-coffee-cream tracking-wide uppercase">
             Our Blogs
           </h2>
           <span className="block w-14 h-0.5 bg-coffee-accent mx-auto mt-3 sm:mt-4" />
-          <p className="font-body text-sm sm:text-base text-coffee-dark/60 mt-4 sm:mt-5">
+          <p className="font-body text-sm sm:text-base text-coffee-cream/65 mt-4 sm:mt-5">
             Stories, Brewing Tips & News From Blend & Brew
           </p>
         </div>

@@ -90,7 +90,7 @@ const Hero = () => {
             variants={itemVariants}
             className="flex flex-col sm:flex-row items-center gap-3.5 sm:gap-4 mt-9"
           >
-            <button className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-coffee-accent hover:bg-coffee-brown transition-colors duration-300 font-body font-semibold text-white text-sm sm:text-base shadow-lg shadow-coffee-dark/40 hover:shadow-xl">
+            <button className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-coffee-accent hover:bg-coffee-brown transition-colors duration-300 font-body font-semibold text-coffee-cream text-sm sm:text-base shadow-lg shadow-coffee-dark/40 hover:shadow-xl">
               Order Now
             </button>
             <button className="w-full sm:w-auto px-7 py-3.5 rounded-full border border-coffee-cream/50 hover:bg-coffee-cream/10 hover:border-coffee-cream/80 transition-colors duration-300 font-body font-semibold text-coffee-cream text-sm sm:text-base">

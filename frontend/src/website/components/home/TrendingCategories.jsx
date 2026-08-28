@@ -41,7 +41,7 @@ const cardVariants = {
 
 const TrendingCategories = () => {
   return (
-    <section className="w-full bg-white py-14 sm:py-20 md:py-24">
+    <section className="w-full bg-coffee-ivory py-14 sm:py-20 md:py-24">
       <Container>
         {/* Header */}
         <div className="text-center max-w-xl mx-auto mb-10 sm:mb-14 md:mb-16">

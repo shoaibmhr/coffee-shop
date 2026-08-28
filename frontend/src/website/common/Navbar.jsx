@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
+import logo from "../../assets/image/logo.png";
 import {
   ShoppingBag,
   Heart,
@@ -112,11 +113,15 @@ const Navbar = () => {
         <Container>
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
-            <Link to="/" onClick={closeAllOverlays} className="flex items-center gap-2 shrink-0">
+            <Link
+              to="/"
+              onClick={closeAllOverlays}
+              className="flex items-center gap-2 shrink-0"
+            >
               <img
-                src="/assets/logo.png"
+                src={logo}
                 alt="Blend & Brew Coffee Shop"
-                className="w-9 h-9 md:w-10 md:h-10 rounded-full object-cover"
+                className="w-10 h-10 md:w-13 md:h-13 rounded-full object-cover"
               />
               <span className="font-heading font-bold text-lg md:text-xl text-coffee-dark tracking-wide">
                 Blend & Brew
@@ -249,7 +254,7 @@ const Navbar = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
-              className="hidden lg:block absolute top-full left-0 w-full bg-white border-t border-coffee-dark/10 shadow-xl"
+              className="hidden lg:block absolute top-full left-0 w-full bg-coffee-cream border-t border-coffee-dark/10 shadow-xl"
             >
               <Container className="py-8">
                 {openDropdown === "categories" && (
@@ -344,7 +349,7 @@ const Navbar = () => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search for coffee, pastries..."
-                    className="w-full pl-11 pr-4 py-3 rounded-full bg-white border border-coffee-dark/10 font-body text-sm text-coffee-dark placeholder:text-coffee-dark/35 focus:outline-none focus:border-coffee-accent transition-colors"
+                    className="w-full pl-11 pr-4 py-3 rounded-full bg-coffee-cream/60 border border-coffee-dark/10 font-body text-sm text-coffee-dark placeholder:text-coffee-dark/35 focus:outline-none focus:border-coffee-accent  focus:bg-white transition-colors"
                   />
                 </div>
               </Container>
@@ -418,7 +423,10 @@ const Navbar = () => {
                   }
 
                   return (
-                    <div key={link.name} className="border-b border-coffee-dark/10">
+                    <div
+                      key={link.name}
+                      className="border-b border-coffee-dark/10"
+                    >
                       <button
                         type="button"
                         onClick={() =>
@@ -503,8 +511,9 @@ const Navbar = () => {
                 >
                   Order Now <ArrowRight size={16} />
                 </Link>
-                
-                <a  href="tel:+923001234567"
+
+                <a
+                  href="tel:+923001234567"
                   className="flex items-center justify-center gap-2 mt-4 font-body text-sm text-coffee-dark/70"
                 >
                   <Phone size={15} className="text-coffee-accent" />
