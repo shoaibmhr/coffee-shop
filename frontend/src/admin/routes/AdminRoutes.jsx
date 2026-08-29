@@ -6,6 +6,9 @@ import MenuManagement from "../pages/MenuManagement";
 import Categories from "../pages/Categories";
 import Customers from "../pages/Customers";
 import Messages from "../pages/Messages";
+import Profile from "../pages/Profile";
+import Reservations from "../pages/Reservations";
+import Settings from "../pages/Settings";
 
 
 const AdminRoutes = () => {
@@ -18,6 +21,9 @@ const AdminRoutes = () => {
         <Route path="categories" element={<Categories />} />
         <Route path="customers" element={<Customers />} />
         <Route path="messages" element={<Messages />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="reservations" element={<Reservations />} />
+        <Route path="settings" element={<Settings />} />
         {/* Aage Orders, Menu, Categories, Customers, Reviews, Settings yahan add honge */}
       </Route>
     </Routes>
