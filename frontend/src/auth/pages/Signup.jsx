@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Mail, Phone, User, ArrowRight } from "lucide-react";
 import AuthLayout from "../common/AuthLayout";
 import PasswordInput from "../components/PasswordInput";
 import SocialLoginButtons from "../components/SocialLoginButtons";
+import { apiRequest } from "../../services/api";
 
 const Signup = () => {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -13,30 +16,51 @@ const Signup = () => {
     password: "",
     confirmPassword: "",
   });
+
   const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleChange = (e) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleChange = (event) => {
+    setForm((previous) => ({
+      ...previous,
+      [event.target.name]: event.target.value,
+    }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     setError("");
 
     if (form.password !== form.confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
-    if (form.password.length < 6) {
-      setError("Password must be at least 6 characters.");
+
+    if (form.password.length < 8) {
+      setError("Password must be at least 8 characters.");
       return;
     }
 
-    setLoading(true);
-    // Backend integration later: POST /api/auth/signup
-    setTimeout(() => setLoading(false), 1200);
+    try {
+      setLoading(true);
+
+      await apiRequest("/auth/signup", {
+        method: "POST",
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          password: form.password,
+        }),
+      });
+
+      navigate("/");
+    } catch (error) {
+      setError(error.message || "Could not create your account.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -45,20 +69,22 @@ const Signup = () => {
       subtitle="Join Blend & Brew and start earning perks with every order."
     >
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Name */}
         <div>
           <label className="font-body text-xs font-semibold text-coffee-dark/70 mb-1.5 block">
             Full Name
           </label>
+
           <div className="relative">
             <User
               size={16}
               className="absolute left-4 top-1/2 -translate-y-1/2 text-coffee-dark/35"
             />
+
             <input
               type="text"
               name="name"
               required
+              maxLength={120}
               value={form.name}
               onChange={handleChange}
               placeholder="Your name"
@@ -67,16 +93,17 @@ const Signup = () => {
           </div>
         </div>
 
-        {/* Email */}
         <div>
           <label className="font-body text-xs font-semibold text-coffee-dark/70 mb-1.5 block">
             Email Address
           </label>
+
           <div className="relative">
             <Mail
               size={16}
               className="absolute left-4 top-1/2 -translate-y-1/2 text-coffee-dark/35"
             />
+
             <input
               type="email"
               name="email"
@@ -89,20 +116,22 @@ const Signup = () => {
           </div>
         </div>
 
-        {/* Phone */}
         <div>
           <label className="font-body text-xs font-semibold text-coffee-dark/70 mb-1.5 block">
             Phone Number
           </label>
+
           <div className="relative">
             <Phone
               size={16}
               className="absolute left-4 top-1/2 -translate-y-1/2 text-coffee-dark/35"
             />
+
             <input
               type="tel"
               name="phone"
               required
+              maxLength={30}
               value={form.phone}
               onChange={handleChange}
               placeholder="+92 300 1234567"
@@ -111,15 +140,15 @@ const Signup = () => {
           </div>
         </div>
 
-        {/* Password + Confirm */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <PasswordInput
             label="Password"
             name="password"
             value={form.password}
             onChange={handleChange}
-            placeholder="Min. 6 characters"
+            placeholder="Min. 8 characters"
           />
+
           <PasswordInput
             label="Confirm Password"
             name="confirmPassword"
@@ -133,28 +162,33 @@ const Signup = () => {
           <p className="font-body text-xs text-red-500 -mt-1">{error}</p>
         )}
 
-        {/* Terms */}
         <label className="flex items-start gap-2.5 cursor-pointer">
           <input
             type="checkbox"
             required
             checked={agreed}
-            onChange={() => setAgreed((prev) => !prev)}
+            onChange={() => setAgreed((previous) => !previous)}
             className="w-4 h-4 mt-0.5 rounded border-coffee-dark/25 text-coffee-accent focus:ring-coffee-accent/30 cursor-pointer shrink-0"
           />
+
           <span className="font-body text-sm text-coffee-dark/65 leading-relaxed">
             I agree to the{" "}
-            <Link to="/terms" className="font-semibold text-coffee-accent hover:text-coffee-dark">
+            <Link
+              to="/terms"
+              className="font-semibold text-coffee-accent hover:text-coffee-dark"
+            >
               Terms of Service
             </Link>{" "}
             and{" "}
-            <Link to="/privacy" className="font-semibold text-coffee-accent hover:text-coffee-dark">
+            <Link
+              to="/privacy"
+              className="font-semibold text-coffee-accent hover:text-coffee-dark"
+            >
               Privacy Policy
             </Link>
           </span>
         </label>
 
-        {/* Submit */}
         <button
           type="submit"
           disabled={loading}

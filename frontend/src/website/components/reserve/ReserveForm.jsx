@@ -1,43 +1,58 @@
 import { useState } from "react";
-import { motion, } from "framer-motion";
-import {
-  Calendar,
-  Clock,
-  Minus,
-  Plus,
-  Send,
-  CheckCircle2,
-} from "lucide-react";
+import { motion } from "framer-motion";
+import { Calendar, Clock, Minus, Plus, Send, CheckCircle2 } from "lucide-react";
+import { apiRequest } from "../../../services/api";
 
 const today = new Date().toISOString().split("T")[0];
 
+const initialForm = {
+  name: "",
+  email: "",
+  phone: "",
+  date: "",
+  time: "",
+  guests: 2,
+  request: "",
+};
+
 const ReserveForm = () => {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    date: "",
-    time: "",
-    guests: 2,
-    request: "",
-  });
+  const [form, setForm] = useState(initialForm);
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleChange = (e) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const adjustGuests = (delta) => {
-    setForm((prev) => ({
-      ...prev,
-      guests: Math.min(12, Math.max(1, prev.guests + delta)),
+  const handleChange = (event) => {
+    setForm((previous) => ({
+      ...previous,
+      [event.target.name]: event.target.value,
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Backend integration later: POST /api/reservations
-    setSubmitted(true);
+  const adjustGuests = (delta) => {
+    setForm((previous) => ({
+      ...previous,
+      guests: Math.min(12, Math.max(1, previous.guests + delta)),
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      setLoading(true);
+      setError("");
+
+      await apiRequest("/reservations", {
+        method: "POST",
+        body: JSON.stringify(form),
+      });
+
+      setSubmitted(true);
+    } catch (error) {
+      setError(error.message || "Could not send reservation request.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const inputClasses =
@@ -54,27 +69,22 @@ const ReserveForm = () => {
         <div className="w-16 h-16 rounded-full bg-coffee-accent/10 flex items-center justify-center mb-5">
           <CheckCircle2 size={32} className="text-coffee-accent" />
         </div>
+
         <h3 className="font-heading text-xl sm:text-2xl font-bold text-coffee-dark">
           Reservation Requested
         </h3>
+
         <p className="font-body text-sm sm:text-base text-coffee-dark/60 mt-3 max-w-sm leading-relaxed">
-          Thanks, {form.name.split(" ")[0] || "there"}! We've received your
-          request for {form.guests} {form.guests === 1 ? "guest" : "guests"}{" "}
-          on {form.date || "your selected date"}. We'll confirm shortly by
-          email or phone.
+          Thanks, {form.name.split(" ")[0] || "there"}! We received your
+          reservation request for {form.guests}{" "}
+          {form.guests === 1 ? "guest" : "guests"} on {form.date}. We will
+          confirm shortly by email or phone.
         </p>
+
         <button
           onClick={() => {
             setSubmitted(false);
-            setForm({
-              name: "",
-              email: "",
-              phone: "",
-              date: "",
-              time: "",
-              guests: 2,
-              request: "",
-            });
+            setForm(initialForm);
           }}
           className="mt-8 px-6 py-3 border border-coffee-dark text-coffee-dark font-body text-xs font-bold uppercase tracking-[0.15em] hover:bg-coffee-dark hover:text-coffee-cream transition-colors duration-300"
         >
@@ -86,12 +96,12 @@ const ReserveForm = () => {
 
   return (
     <form onSubmit={handleSubmit} className="w-full">
-      {/* Name + Email */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
           <label className="font-body text-xs font-semibold text-coffee-dark/70 uppercase tracking-wide mb-2 block">
             Full Name
           </label>
+
           <input
             type="text"
             name="name"
@@ -102,10 +112,12 @@ const ReserveForm = () => {
             className={inputClasses}
           />
         </div>
+
         <div>
           <label className="font-body text-xs font-semibold text-coffee-dark/70 uppercase tracking-wide mb-2 block">
             Email Address
           </label>
+
           <input
             type="email"
             name="email"
@@ -118,12 +130,12 @@ const ReserveForm = () => {
         </div>
       </div>
 
-      {/* Phone + Guests */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5">
         <div>
           <label className="font-body text-xs font-semibold text-coffee-dark/70 uppercase tracking-wide mb-2 block">
             Phone Number
           </label>
+
           <input
             type="tel"
             name="phone"
@@ -134,10 +146,12 @@ const ReserveForm = () => {
             className={inputClasses}
           />
         </div>
+
         <div>
           <label className="font-body text-xs font-semibold text-coffee-dark/70 uppercase tracking-wide mb-2 block">
             Number of Guests
           </label>
+
           <div className="flex items-center h-12 sm:h-13 bg-coffee-cream/40 border border-coffee-dark/10 rounded-lg">
             <button
               type="button"
@@ -147,9 +161,11 @@ const ReserveForm = () => {
             >
               <Minus size={15} />
             </button>
+
             <span className="flex-1 text-center font-body text-sm font-semibold text-coffee-dark">
               {form.guests} {form.guests === 1 ? "Guest" : "Guests"}
             </span>
+
             <button
               type="button"
               onClick={() => adjustGuests(1)}
@@ -162,17 +178,18 @@ const ReserveForm = () => {
         </div>
       </div>
 
-      {/* Date + Time */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5">
         <div>
           <label className="font-body text-xs font-semibold text-coffee-dark/70 uppercase tracking-wide mb-2 block">
             Date
           </label>
+
           <div className="relative">
             <Calendar
               size={16}
               className="absolute left-4 top-1/2 -translate-y-1/2 text-coffee-dark/40 pointer-events-none"
             />
+
             <input
               type="date"
               name="date"
@@ -184,15 +201,18 @@ const ReserveForm = () => {
             />
           </div>
         </div>
+
         <div>
           <label className="font-body text-xs font-semibold text-coffee-dark/70 uppercase tracking-wide mb-2 block">
             Time
           </label>
+
           <div className="relative">
             <Clock
               size={16}
               className="absolute left-4 top-1/2 -translate-y-1/2 text-coffee-dark/40 pointer-events-none"
             />
+
             <input
               type="time"
               name="time"
@@ -205,7 +225,6 @@ const ReserveForm = () => {
         </div>
       </div>
 
-      {/* Special Request */}
       <div className="mt-5">
         <label className="font-body text-xs font-semibold text-coffee-dark/70 uppercase tracking-wide mb-2 block">
           Special Request{" "}
@@ -213,6 +232,7 @@ const ReserveForm = () => {
             (optional)
           </span>
         </label>
+
         <textarea
           name="request"
           value={form.request}
@@ -223,16 +243,21 @@ const ReserveForm = () => {
         />
       </div>
 
-      {/* Submit */}
+      {error && <p className="mt-4 font-body text-sm text-red-600">{error}</p>}
+
       <button
         type="submit"
-        className="group w-full sm:w-auto flex items-center justify-center gap-2 mt-7 px-8 py-3.5 bg-coffee-dark hover:bg-coffee-accent text-coffee-cream font-body text-xs font-bold uppercase tracking-[0.15em] transition-colors duration-300"
+        disabled={loading}
+        className="group w-full sm:w-auto flex items-center justify-center gap-2 mt-7 px-8 py-3.5 bg-coffee-dark hover:bg-coffee-accent disabled:opacity-60 text-coffee-cream font-body text-xs font-bold uppercase tracking-[0.15em] transition-colors duration-300"
       >
-        Reserve Now
-        <Send
-          size={14}
-          className="transition-transform duration-300 group-hover:translate-x-1"
-        />
+        {loading ? "Sending Request..." : "Reserve Now"}
+
+        {!loading && (
+          <Send
+            size={14}
+            className="transition-transform duration-300 group-hover:translate-x-1"
+          />
+        )}
       </button>
     </form>
   );

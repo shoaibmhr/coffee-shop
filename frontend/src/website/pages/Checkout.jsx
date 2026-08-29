@@ -12,6 +12,7 @@ import {
   selectTotalPrice,
   clearCart,
 } from "../../redux/slices/cartSlice";
+import { apiRequest } from "../../services/api";
 
 const Checkout = () => {
   const dispatch = useDispatch();
@@ -21,6 +22,8 @@ const Checkout = () => {
 
   const [orderType, setOrderType] = useState("pickup");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -31,33 +34,61 @@ const Checkout = () => {
     notes: "",
   });
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     if (!formData.fullName || !formData.phone || !formData.email) {
-      alert("Please fill in your name, phone, and email.");
+      setError("Please fill in your name, phone, and email.");
       return;
     }
+
     if (orderType === "delivery" && !formData.address) {
-      alert("Please enter a delivery address.");
+      setError("Please enter a delivery address.");
       return;
     }
+
     if (
       (formData.payment === "jazzcash" || formData.payment === "easypaisa") &&
       !formData.walletNumber
     ) {
-      alert("Please enter your wallet account number.");
+      setError("Please enter your wallet account number.");
       return;
     }
 
-    setIsSubmitting(true);
+    try {
+      setIsSubmitting(true);
+      setError("");
 
-    // Backend connect hone par yahan POST /api/orders call hogi
-    setTimeout(() => {
-      const orderNumber = `BB-${Math.floor(10000 + Math.random() * 90000)}`;
-      dispatch(clearCart());
-      navigate("/order-confirmation", {
-        state: { orderNumber, orderType, formData },
+      const data = await apiRequest("/orders", {
+        method: "POST",
+        body: JSON.stringify({
+          customerName: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          orderType,
+          address: formData.address,
+          paymentMethod: formData.payment,
+          notes: formData.notes,
+          items: cartItems.map((item) => ({
+            productId: item.id,
+            sizeId: item.sizeId,
+            quantity: item.quantity,
+          })),
+        }),
       });
-    }, 2200);
+
+      dispatch(clearCart());
+
+      navigate("/order-confirmation", {
+        state: {
+          orderNumber: data.order.orderNumber,
+          orderType,
+          formData,
+        },
+      });
+    } catch (error) {
+      setError(error.message || "Could not place your order.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -80,7 +111,12 @@ const Checkout = () => {
                   orderType={orderType}
                   setOrderType={setOrderType}
                 />
+
+                {error && (
+                  <p className="mt-4 font-body text-sm text-red-600">{error}</p>
+                )}
               </div>
+
               <div className="lg:col-span-1">
                 <OrderReview
                   cartItems={cartItems}

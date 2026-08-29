@@ -2,28 +2,50 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Send } from "lucide-react";
 import { FaInstagram, FaFacebookF, FaTwitter } from "react-icons/fa";
+import { apiRequest } from "../../../services/api";
+
+const initialForm = {
+  name: "",
+  email: "",
+  phone: "",
+  subject: "",
+  message: "",
+};
 
 const ContactForm = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
+  const [formData, setFormData] = useState(initialForm);
+  const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleChange = (event) => {
+    setFormData((previous) => ({
+      ...previous,
+      [event.target.name]: event.target.value,
+    }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
-    setFormData({ name: "", email: "", subject: "", message: "" });
-  };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-  const socialLinks = [FaInstagram, FaFacebookF, FaTwitter];
+    try {
+      setLoading(true);
+      setError("");
+      setSubmitted(false);
+
+      await apiRequest("/contact", {
+        method: "POST",
+        body: JSON.stringify(formData),
+      });
+
+      setFormData(initialForm);
+      setSubmitted(true);
+    } catch (error) {
+      setError(error.message || "Could not send your message.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <motion.div
@@ -36,99 +58,85 @@ const ContactForm = () => {
       <span className="font-body tracking-[0.2em] text-xs font-semibold text-coffee-accent uppercase">
         Get In Touch
       </span>
+
       <h2 className="font-heading text-2xl sm:text-3xl font-bold text-coffee-dark mt-2 mb-6">
         Send Us a Message
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="font-body text-xs font-semibold text-coffee-dark/70 mb-1.5 block">
-              Full Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              required
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="John Doe"
-              className="w-full px-4 py-3 rounded-lg border border-coffee-dark/15 font-body text-sm focus:outline-none focus:border-coffee-accent transition-colors"
-            />
-          </div>
-          <div>
-            <label className="font-body text-xs font-semibold text-coffee-dark/70 mb-1.5 block">
-              Email Address
-            </label>
-            <input
-              type="email"
-              name="email"
-              required
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="john@example.com"
-              className="w-full px-4 py-3 rounded-lg border border-coffee-dark/15 font-body text-sm focus:outline-none focus:border-coffee-accent transition-colors"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="font-body text-xs font-semibold text-coffee-dark/70 mb-1.5 block">
-            Subject
-          </label>
           <input
             type="text"
-            name="subject"
+            name="name"
             required
-            value={formData.subject}
+            value={formData.name}
             onChange={handleChange}
-            placeholder="How can we help?"
-            className="w-full px-4 py-3 rounded-lg border border-coffee-dark/15 font-body text-sm focus:outline-none focus:border-coffee-accent transition-colors"
+            placeholder="Full Name"
+            className="w-full px-4 py-3 rounded-lg border border-coffee-dark/15 font-body text-sm focus:outline-none focus:border-coffee-accent"
+          />
+
+          <input
+            type="email"
+            name="email"
+            required
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email Address"
+            className="w-full px-4 py-3 rounded-lg border border-coffee-dark/15 font-body text-sm focus:outline-none focus:border-coffee-accent"
           />
         </div>
 
-        <div>
-          <label className="font-body text-xs font-semibold text-coffee-dark/70 mb-1.5 block">
-            Message
-          </label>
-          <textarea
-            name="message"
-            required
-            rows={5}
-            value={formData.message}
-            onChange={handleChange}
-            placeholder="Tell us more..."
-            className="w-full px-4 py-3 rounded-lg border border-coffee-dark/15 font-body text-sm focus:outline-none focus:border-coffee-accent transition-colors resize-none"
-          />
-        </div>
+        <input
+          type="tel"
+          name="phone"
+          value={formData.phone}
+          onChange={handleChange}
+          placeholder="Phone / WhatsApp Number (optional)"
+          className="w-full px-4 py-3 rounded-lg border border-coffee-dark/15 font-body text-sm focus:outline-none focus:border-coffee-accent"
+        />
+
+        <input
+          type="text"
+          name="subject"
+          required
+          value={formData.subject}
+          onChange={handleChange}
+          placeholder="Subject"
+          className="w-full px-4 py-3 rounded-lg border border-coffee-dark/15 font-body text-sm focus:outline-none focus:border-coffee-accent"
+        />
+
+        <textarea
+          name="message"
+          required
+          rows={5}
+          value={formData.message}
+          onChange={handleChange}
+          placeholder="Tell us more..."
+          className="w-full px-4 py-3 rounded-lg border border-coffee-dark/15 font-body text-sm focus:outline-none focus:border-coffee-accent resize-none"
+        />
+
+        {error && <p className="font-body text-sm text-red-600">{error}</p>}
+
+        {submitted && (
+          <p className="font-body text-sm text-green-600">
+            Message sent successfully. We will contact you soon.
+          </p>
+        )}
 
         <button
           type="submit"
-          disabled={submitted}
-          className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-body font-semibold text-sm transition-colors duration-300 ${
-            submitted
-              ? "bg-green-600 text-white"
-              : "bg-coffee-dark hover:bg-coffee-accent text-coffee-cream"
-          }`}
+          disabled={loading}
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-body font-semibold text-sm bg-coffee-dark hover:bg-coffee-accent disabled:opacity-60 text-coffee-cream transition-colors"
         >
-          {submitted ? (
-            "Message Sent ✓"
-          ) : (
-            <>
-              <Send size={15} /> Send Message
-            </>
-          )}
+          {loading ? "Sending..." : "Send Message"}
+          {!loading && <Send size={15} />}
         </button>
       </form>
 
-      {/* Social links */}
       <div className="flex items-center gap-3 mt-8 pt-6 border-t border-coffee-dark/10">
-        <span className="font-body text-xs text-coffee-dark/50 mr-2">
-          Follow us:
-        </span>
-        {socialLinks.map((Icon, i) => (
-          
-           <a key={i}
+        {[FaInstagram, FaFacebookF, FaTwitter].map((Icon, index) => (
+          <a
+            key={index}
             href="#"
             className="w-9 h-9 rounded-full bg-coffee-cream flex items-center justify-center hover:bg-coffee-accent hover:text-white text-coffee-dark transition-colors"
           >

@@ -1,29 +1,33 @@
-import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Mail, Phone, Calendar, Send, Trash2 } from "lucide-react";
-import StatusBadge from "../../common/StatusBadge";
+import { X, Mail, Phone, Calendar, MessageCircle, Trash2 } from "lucide-react";
 
-const MessageDetailModal = ({ message, onClose, onReply, onDelete }) => {
-  const [replyText, setReplyText] = useState("");
+function getWhatsAppNumber(phone) {
+  if (!phone) return "";
 
+  let digits = phone.replace(/\D/g, "");
+
+  if (digits.startsWith("0")) {
+    digits = `92${digits.slice(1)}`;
+  }
+
+  return digits;
+}
+
+const MessageDetailModal = ({ message, onClose, onDelete }) => {
   if (!message) return null;
 
-  const submitted = new Date(message.submittedDate).toLocaleString("en-US", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
+  const whatsappNumber = getWhatsAppNumber(message.phone);
 
-  const handleSendReply = (e) => {
-    e.preventDefault();
-    if (!replyText.trim()) return;
-    // Backend integration later: POST /api/messages/{id}/reply
-    // sends an actual email to message.email with replyText
-    onReply(message);
-    setReplyText("");
-  };
+  const submittedDate = new Date(message.submittedDate).toLocaleString(
+    "en-US",
+    {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    },
+  );
 
   return (
     <AnimatePresence>
@@ -38,93 +42,88 @@ const MessageDetailModal = ({ message, onClose, onReply, onDelete }) => {
           initial={{ x: "100%" }}
           animate={{ x: 0 }}
           exit={{ x: "100%" }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
-          onClick={(e) => e.stopPropagation()}
+          transition={{ duration: 0.3 }}
+          onClick={(event) => event.stopPropagation()}
           className="w-full max-w-md h-full bg-white overflow-y-auto flex flex-col"
         >
-          {/* Header */}
-          <div className="flex items-center justify-between p-5 sm:p-6 border-b border-coffee-dark/10 sticky top-0 bg-white z-10">
+          <div className="flex items-center justify-between p-5 sm:p-6 border-b border-coffee-dark/10">
             <h3 className="font-heading text-lg sm:text-xl font-bold text-coffee-dark">
               Message Details
             </h3>
+
             <button
               onClick={onClose}
-              className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-coffee-cream transition-colors"
-              aria-label="Close"
+              className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-coffee-cream"
             >
-              <X size={18} className="text-coffee-dark" />
+              <X size={18} />
             </button>
           </div>
 
           <div className="p-5 sm:p-6 flex-1">
-            {/* Sender info */}
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <h4 className="font-heading text-base font-bold text-coffee-dark">
-                  {message.name}
-                </h4>
-                <p className="font-body text-sm text-coffee-accent font-semibold mt-1">
-                  {message.subject}
+            <h4 className="font-heading text-base font-bold text-coffee-dark">
+              {message.name}
+            </h4>
+
+            <p className="font-body text-sm text-coffee-accent font-semibold mt-1">
+              {message.subject}
+            </p>
+
+            <div className="mt-5 space-y-3 text-coffee-dark/60">
+              <p className="flex items-center gap-2 text-xs">
+                <Mail size={14} /> {message.email}
+              </p>
+
+              {message.phone && (
+                <p className="flex items-center gap-2 text-xs">
+                  <Phone size={14} /> {message.phone}
                 </p>
-              </div>
-              <StatusBadge status={message.status} />
+              )}
+
+              <p className="flex items-center gap-2 text-xs">
+                <Calendar size={14} /> {submittedDate}
+              </p>
             </div>
 
-            {/* Contact info */}
-            <div className="mt-5 space-y-2.5">
-              <div className="flex items-center gap-2.5">
-                <Mail size={14} className="text-coffee-dark/40 shrink-0" />
-                <span className="font-body text-xs text-coffee-dark/60 truncate">
-                  {message.email}
-                </span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <Phone size={14} className="text-coffee-dark/40 shrink-0" />
-                <span className="font-body text-xs text-coffee-dark/60">
-                  {message.phone}
-                </span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <Calendar size={14} className="text-coffee-dark/40 shrink-0" />
-                <span className="font-body text-xs text-coffee-dark/60">
-                  {submitted}
-                </span>
-              </div>
-            </div>
-
-            {/* Message body */}
             <div className="mt-5 p-4 rounded-xl bg-coffee-cream/40">
               <p className="font-body text-sm text-coffee-dark/80 leading-relaxed">
                 {message.message}
               </p>
             </div>
 
-            {/* Reply box */}
-            <form onSubmit={handleSendReply} className="mt-6">
-              <label className="font-body text-xs font-semibold text-coffee-dark/70 mb-2 block">
-                Reply to {message.name.split(" ")[0]}
-              </label>
-              <textarea
-                value={replyText}
-                onChange={(e) => setReplyText(e.target.value)}
-                rows={4}
-                placeholder="Type your reply..."
-                className="w-full px-4 py-3 rounded-lg border border-coffee-dark/15 font-body text-sm focus:outline-none focus:border-coffee-accent transition-colors resize-none"
-              />
-              <button
-                type="submit"
-                className="w-full mt-3 flex items-center justify-center gap-2 py-3 rounded-full bg-coffee-dark hover:bg-coffee-accent transition-colors font-body font-semibold text-coffee-cream text-sm"
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
+              <a
+                href={`mailto:${message.email}?subject=${encodeURIComponent(`Re: ${message.subject}`)}`}
+                className="flex items-center justify-center gap-2 py-3 rounded-full bg-coffee-dark hover:bg-coffee-accent text-white font-body text-sm font-semibold transition-colors"
               >
-                <Send size={14} /> Send Reply
-              </button>
-            </form>
+                <Mail size={15} /> Email Customer
+              </a>
+
+              {whatsappNumber && (
+                <a
+                  href={`https://wa.me/${whatsappNumber}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center justify-center gap-2 py-3 rounded-full bg-green-600 hover:bg-green-700 text-white font-body text-sm font-semibold transition-colors"
+                >
+                  <MessageCircle size={15} /> WhatsApp
+                </a>
+              )}
+
+              {message.phone && (
+                <a
+                  href={`tel:${message.phone}`}
+                  className="flex items-center justify-center gap-2 py-3 rounded-full border border-coffee-dark/20 text-coffee-dark font-body text-sm font-semibold"
+                >
+                  <Phone size={15} /> Call Customer
+                </a>
+              )}
+            </div>
           </div>
 
-          {/* Footer action */}
           <div className="p-5 sm:p-6 border-t border-coffee-dark/10">
             <button
               onClick={() => onDelete(message)}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-full text-red-500 hover:bg-red-50 transition-colors font-body font-semibold text-sm"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-full text-red-500 hover:bg-red-50 font-body font-semibold text-sm"
             >
               <Trash2 size={15} /> Delete Message
             </button>
