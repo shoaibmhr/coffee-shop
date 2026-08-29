@@ -188,12 +188,12 @@ const Navbar = () => {
                 )}
               </button>
 
-              <button
-                type="button"
+              <Link
+                to="/login"
                 className="font-body text-sm font-medium text-coffee-dark hover:text-coffee-accent transition-colors mx-1"
               >
                 Sign In
-              </button>
+              </Link>
 
               <Link
                 to="/wishlist"

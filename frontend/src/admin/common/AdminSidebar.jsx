@@ -188,7 +188,7 @@ const AdminSidebar = ({ mobileOpen, setMobileOpen }) => {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex flex-col w-64 h-screen sticky top-0 bg-coffee-dark shrink-0 border-r border-coffee-cream/10">
+      <aside className="hidden lg:flex flex-col w-55 h-screen sticky top-0 bg-coffee-dark shrink-0 border-r border-coffee-cream/10">
         <SidebarContent />
       </aside>
 

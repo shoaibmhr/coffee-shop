@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Menu,
-  Search,
   Bell,
   ChevronDown,
   User,
@@ -10,6 +9,7 @@ import {
   LogOut,
 } from "lucide-react";
 import LogoutModal from "../components/profile/LogoutModal";
+import GlobalSearch from "./GlobalSearch";
 
 const AdminTopbar = ({ setMobileOpen }) => {
   const [profileOpen, setProfileOpen] = useState(false);
@@ -61,16 +61,9 @@ const AdminTopbar = ({ setMobileOpen }) => {
           <Menu size={24} />
         </button>
 
-        <div className="relative hidden sm:block max-w-xs w-full">
-          <Search
-            size={16}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-coffee-dark/40"
-          />
-          <input
-            type="text"
-            placeholder="Search orders, items..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-coffee-cream/50 border border-coffee-dark/10 font-body text-sm focus:outline-none focus:border-coffee-accent transition-colors"
-          />
+        {/* Naya: */}
+        <div className="hidden sm:block max-w-xs w-full">
+          <GlobalSearch />
         </div>
       </div>
 
