@@ -1,12 +1,15 @@
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import WebsiteRoutes from "./website/routes/WebsiteRoutes";
-import ScrollToTop from "./website/common/ScrollToTop";
+// import ScrollToTop from "./website/common/ScrollToTop";
+import AdminRoutes from "./admin/routes/AdminRoutes";
 
 function App() {
   return (
     <BrowserRouter>
-      <ScrollToTop />
-      <WebsiteRoutes />
+      <Routes>
+        <Route path="/*" element={<WebsiteRoutes />} />
+        <Route path="/admin/*" element={<AdminRoutes />} />
+      </Routes>
     </BrowserRouter>
   );
 }
