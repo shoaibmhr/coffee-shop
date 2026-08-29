@@ -9,11 +9,13 @@ import Messages from "../pages/Messages";
 import Profile from "../pages/Profile";
 import Reservations from "../pages/Reservations";
 import Settings from "../pages/Settings";
+import AdminLogin from "../pages/AdminLogin";
 
 
 const AdminRoutes = () => {
   return (
     <Routes>
+      <Route path="login" element={<AdminLogin/>} />
       <Route element={<AdminLayout />}>
         <Route index element={<Dashboard />} />
         <Route path="orders" element={<Orders />} />
